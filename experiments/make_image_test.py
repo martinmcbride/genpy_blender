@@ -5,6 +5,7 @@ import sys
 import math
 import os
 
+
 working_dir_path = os.path.abspath("/nas/martin/7-software-projects/genpy_blender/genpy_blender/")
 print("!!!", working_dir_path, "!!!")
 sys.path.append(working_dir_path)
@@ -12,41 +13,44 @@ sys.path.append(working_dir_path)
 import utils
 import camera
 import lighting
+import make_image
 
+make_image.make_blender_image("make_image_test", None, 100, 100)
 
-def set_scene_objects() -> bpy.types.Object:
-    num_suzannes = 5
-    for index in range(num_suzannes):
-        utils.create_smooth_monkey(location=((index - (num_suzannes - 1) / 2) * 3.0, 0.0, 0.0),
-                                   name="Suzanne" + str(index))
-    return bpy.data.objects["Suzanne" + str(int((num_suzannes - 1) / 2))]
-
-
-# Args
-output_file_path = bpy.path.relpath("make_image_test")
-resolution_percentage = 100
-num_samples = 128
-
-# Scene Building
-
-## Reset
-utils.clean_objects()
-
-## Suzannes
-center_suzanne = set_scene_objects()
-
-## Camera
-camera_object = camera.create_camera(location=(10.0, -7.0, 0.0))
-
-camera.add_track_to_constraint(camera_object, center_suzanne)
-camera.set_camera_params(camera_object.data, center_suzanne, lens=50.0)
-
-## Lights
-lighting.create_sun_light(rotation=(0.0, math.pi * 0.5, -math.pi * 0.1))
-
-# Render Setting
-scene = bpy.data.scenes["Scene"]
-print("{{{{{{{{{{{{{{{{{{{{{", output_file_path, resolution_percentage, num_samples)
-utils.set_output_properties(scene, resolution_percentage, output_file_path)
-utils.set_cycles_renderer(scene, camera_object, num_samples)
-print(">>>>>>>>>>>>>>>>>>>>>MBI DONE")
+#
+# def set_scene_objects() -> bpy.types.Object:
+#     num_suzannes = 5
+#     for index in range(num_suzannes):
+#         utils.create_smooth_monkey(location=((index - (num_suzannes - 1) / 2) * 3.0, 0.0, 0.0),
+#                                    name="Suzanne" + str(index))
+#     return bpy.data.objects["Suzanne" + str(int((num_suzannes - 1) / 2))]
+#
+#
+# # Args
+# output_file_path = bpy.path.relpath("make_image_test")
+# resolution_percentage = 100
+# num_samples = 128
+#
+# # Scene Building
+#
+# ## Reset
+# utils.clean_objects()
+#
+# ## Suzannes
+# center_suzanne = set_scene_objects()
+#
+# ## Camera
+# camera_object = camera.create_camera(location=(10.0, -7.0, 0.0))
+#
+# camera.add_track_to_constraint(camera_object, center_suzanne)
+# camera.set_camera_params(camera_object.data, center_suzanne, lens=50.0)
+#
+# ## Lights
+# lighting.create_sun_light(rotation=(0.0, math.pi * 0.5, -math.pi * 0.1))
+#
+# # Render Setting
+# scene = bpy.data.scenes["Scene"]
+# print("{{{{{{{{{{{{{{{{{{{{{", output_file_path, resolution_percentage, num_samples)
+# utils.set_output_properties(scene, resolution_percentage, output_file_path)
+# utils.set_cycles_renderer(scene, camera_object, num_samples)
+# print(">>>>>>>>>>>>>>>>>>>>>MBI DONE")
