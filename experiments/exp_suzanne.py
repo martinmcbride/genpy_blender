@@ -15,7 +15,7 @@ import lighting
 
 
 def set_scene_objects() -> bpy.types.Object:
-    num_suzannes = 15
+    num_suzannes = 5
     for index in range(num_suzannes):
         utils.create_smooth_monkey(location=((index - (num_suzannes - 1) / 2) * 3.0, 0.0, 0.0),
                                    name="Suzanne" + str(index))
@@ -46,5 +46,7 @@ lighting.create_sun_light(rotation=(0.0, math.pi * 0.5, -math.pi * 0.1))
 
 # Render Setting
 scene = bpy.data.scenes["Scene"]
+print("{{{{{{{{{{{{{{{{{{{{{", output_file_path, resolution_percentage, num_samples)
 utils.set_output_properties(scene, resolution_percentage, output_file_path)
 utils.set_cycles_renderer(scene, camera_object, num_samples)
+print(">>>>>>>>>>>>>>>>>>>>>MBI DONE")

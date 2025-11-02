@@ -1,3 +1,9 @@
+# Author:  Martin McBride
+# Created: 2025-11-02
+# Copyright (c) 2025, Martin McBride
+# License: GNU GPL V 3
+# Based on part on https://github.com/yuki-koyama/blender-cli-rendering
+
 from typing import Tuple, Optional
 
 import bpy
