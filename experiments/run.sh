@@ -1,1 +1,0 @@
-blender --background -noaudio --python ./exp_suzanne.py --render-frame 1 -- ./02_suzanne_ 100 128
