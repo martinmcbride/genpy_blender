@@ -23,9 +23,9 @@ def set_scene_objects() -> bpy.types.Object:
 
 
 # Args
-output_file_path = bpy.path.relpath(str(sys.argv[sys.argv.index('--') + 1]))
-resolution_percentage = int(sys.argv[sys.argv.index('--') + 2])
-num_samples = int(sys.argv[sys.argv.index('--') + 3])
+output_file_path = bpy.path.relpath("make_image_test")
+resolution_percentage = 100
+num_samples = 128
 
 # Scene Building
 

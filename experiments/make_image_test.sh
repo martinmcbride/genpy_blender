@@ -1,1 +1,1 @@
-blender --background -noaudio --python make_image_test.py --render-frame 1 -- make_image_test 100 128
+blender --background -noaudio --python make_image_test.py --render-frame 1
