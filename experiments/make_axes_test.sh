@@ -1,0 +1,1 @@
+blender --background -noaudio --python make_axes_test.py --render-frame 1
