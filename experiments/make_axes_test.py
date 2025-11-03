@@ -17,15 +17,28 @@ import make_image
 def plane(orientation):
     bpy.ops.mesh.primitive_plane_add()
     plane = bpy.context.active_object
-    newloc = Vector((0, 0, 0 ))
-    plane.location = newloc
-    angle = math.radians(90)
-    plane.rotation_euler[1] = angle
+    if orientation=="x":
+        plane.location = Vector((0, 1, 0))
+        angle = math.radians(90)
+        plane.rotation_euler[0] = angle
+    if orientation=="y":
+        plane.location = Vector((-1, 0, 0))
+        angle = math.radians(90)
+        plane.rotation_euler[1] = angle
+    if orientation=="z":
+        plane.location = Vector((0, 0, -1))
     plane.scale = Vector((1, 1, 1))
 
     mat = bpy.data.materials.new("col")
-    mat.diffuse_color = (0, 1, 0, 1)
-    plane.active_material = mat
+    if orientation=="x":
+        mat.diffuse_color = (1, 0, 0, 1)
+        plane.active_material = mat
+    if orientation=="y":
+        mat.diffuse_color = (0, 1, 0, 1)
+        plane.active_material = mat
+    if orientation=="z":
+        mat.diffuse_color = (0, 0, 1, 1)
+        plane.active_material = mat
 
 
 def set_scene_objects() -> bpy.types.Object:
@@ -42,6 +55,8 @@ def draw(pixel_width, pixel_height, frame_no, frame_count):
 
     centre = set_scene_objects()
     plane("x")
+    plane("y")
+    plane("z")
 
     camera.add_track_to_constraint(camera_object, centre)
     camera.set_camera_params(camera_object.data, centre, lens=50.0)
