@@ -14,31 +14,80 @@ import camera
 import lighting
 import make_image
 
+def cylinder_between(x1, y1, z1, x2, y2, z2, r=0.01, color=(0, 0, 0, 0)):
+
+  dx = x2 - x1
+  dy = y2 - y1
+  dz = z2 - z1
+  dist = math.sqrt(dx**2 + dy**2 + dz**2)
+
+  bpy.ops.mesh.primitive_cylinder_add(
+      radius = r,
+      depth = dist,
+      location = (dx/2 + x1, dy/2 + y1, dz/2 + z1)
+  )
+
+  phi = math.atan2(dy, dx)
+  theta = math.acos(dz/dist)
+
+  bpy.context.object.rotation_euler[1] = theta
+  bpy.context.object.rotation_euler[2] = phi
+
+  mat = bpy.data.materials.new("col")
+  mat.diffuse_color = color
+  bpy.context.object.active_material = mat
+
+
 def plane(orientation):
+    start = (0, 0, 0)
+    end = (1, 1, 1)
+    step = (5, 4, 6)
+
     bpy.ops.mesh.primitive_plane_add()
     plane = bpy.context.active_object
     if orientation=="x":
         plane.location = Vector((0, 1, 0))
         angle = math.radians(90)
         plane.rotation_euler[0] = angle
+        for i in range(step[0]):
+            cylinder_between(i*0.4 - 1, 1, -1, i*0.4 - 1, 1, 1, 0.01)
+        for i in range(step[2]):
+            cylinder_between(-1, 1, i*0.3333 - 1, 1, 1, i*0.3333 - 1, 0.01)
+
     if orientation=="y":
         plane.location = Vector((-1, 0, 0))
         angle = math.radians(90)
         plane.rotation_euler[1] = angle
+        for i in range(step[1]):
+            cylinder_between(-1, i * 0.5 - 1, -1, -1, i * 0.5 - 1, 1, 0.01)
+        for i in range(step[2]):
+            cylinder_between(-1, -1, i*0.3333 - 1, -1, 1, i*0.3333 - 1, 0.01)
+
     if orientation=="z":
         plane.location = Vector((0, 0, -1))
+        for i in range(step[0]):
+            cylinder_between(i*0.4 - 1, -1, -1, i*0.4 - 1, 1, -1, 0.01)
+        for i in range(step[1]):
+            cylinder_between(-1, i * 0.5 - 1, -1, 1, i * 0.5 - 1, -1, 0.01)
+
     plane.scale = Vector((1, 1, 1))
 
     mat = bpy.data.materials.new("col")
     if orientation=="x":
-        mat.diffuse_color = (1, 0, 0, 1)
+        mat.diffuse_color = (0.8, 0.8, 0.8, 1)
         plane.active_material = mat
     if orientation=="y":
-        mat.diffuse_color = (0, 1, 0, 1)
+        mat.diffuse_color = (0.8, 0.8, 0.8, 1)
         plane.active_material = mat
     if orientation=="z":
-        mat.diffuse_color = (0, 0, 1, 1)
+        mat.diffuse_color = (0.8, 0.8, 0.8, 1)
         plane.active_material = mat
+
+def axes():
+    r = 0.02
+    cylinder_between(-1, 1, -1, 1, 1, -1, r, color=(1, 0, 0, 1))
+    cylinder_between(-1, -1, -1, -1, 1, -1, r, color=(0, 1, 0, 1))
+    cylinder_between(-1, 1, -1, -1, 1, 1, r, color=(0, 0, 1, 1))
 
 
 def look_at(obj_camera, point):
@@ -68,6 +117,7 @@ def draw(pixel_width, pixel_height, frame_no, frame_count):
     plane("x")
     plane("y")
     plane("z")
+    axes()
 
     ## Lights
     lighting.create_sun_light(rotation=(0.0, math.pi * 0.5, -math.pi * 0.1))
