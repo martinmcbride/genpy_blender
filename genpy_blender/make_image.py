@@ -12,7 +12,7 @@ import lighting
 def make_blender_image(outfile, draw, width, height):
     output_file_path = bpy.path.relpath(outfile)
     resolution_percentage = 100
-    num_samples = 128
+    num_samples = 5
     utils.clean_objects()
 
     print(">>>>>>", draw)

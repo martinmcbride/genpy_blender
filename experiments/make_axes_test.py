@@ -41,25 +41,33 @@ def plane(orientation):
         plane.active_material = mat
 
 
-def set_scene_objects() -> bpy.types.Object:
-    num_suzannes = 1
-    for index in range(num_suzannes):
-        utils.create_smooth_monkey(location=((index - (num_suzannes - 1) / 2) * 3.0, 0.0, 0.0),
-                                   name="Suzanne" + str(index))
-    return bpy.data.objects["Suzanne" + str(int((num_suzannes - 1) / 2))]
+def look_at(obj_camera, point):
+    loc_camera = obj_camera.matrix_world.to_translation()
+
+    direction = point - loc_camera
+    # point the cameras '-Z' and use its 'Y' as up
+    rot_quat = direction.to_track_quat('-Z', 'Y')
+
+    # assume we're using euler rotation
+    obj_camera.rotation_euler = rot_quat.to_euler()
+
+
+def create_plot_camera(distance=8, xy_rot=-math.pi/4, z_rot=math.pi/6):
+    print(distance*math.cos(xy_rot), distance*math.sin(xy_rot), distance*math.cos(z_rot))
+    location = (distance*math.cos(xy_rot), distance*math.sin(xy_rot), distance*math.cos(z_rot))
+    camera_object = camera.create_camera(location)
+    look_at(camera_object, Vector((0, 0, 0)))
+    camera.set_camera_params(camera_object.data, None, lens=50.0)
+    return camera_object
 
 
 def draw(pixel_width, pixel_height, frame_no, frame_count):
 
-    camera_object = camera.create_camera(location=(10.0, -7.0, 0.0))
+    camera_object = create_plot_camera()
 
-    centre = set_scene_objects()
     plane("x")
     plane("y")
     plane("z")
-
-    camera.add_track_to_constraint(camera_object, centre)
-    camera.set_camera_params(camera_object.data, centre, lens=50.0)
 
     ## Lights
     lighting.create_sun_light(rotation=(0.0, math.pi * 0.5, -math.pi * 0.1))
