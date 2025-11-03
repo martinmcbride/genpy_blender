@@ -3,9 +3,11 @@
 # Copyright (c) 2025, Martin McBride
 # License: GNU GPL V 3
 # Based on part on https://github.com/yuki-koyama/blender-cli-rendering
+import math
+from typing import Tuple
 
 import bpy
-from typing import Tuple
+from mathutils import Vector
 
 
 def create_camera(location: Tuple[float, float, float]) -> bpy.types.Object:
@@ -32,3 +34,22 @@ def set_camera_params(camera: bpy.types.Camera,
     camera.dof.focus_object = focus_target_object
     camera.dof.aperture_fstop = fstop
     camera.dof.aperture_blades = 11
+
+def look_at(obj_camera, point):
+    loc_camera = obj_camera.matrix_world.to_translation()
+
+    direction = point - loc_camera
+    # point the cameras '-Z' and use its 'Y' as up
+    rot_quat = direction.to_track_quat('-Z', 'Y')
+
+    # assume we're using euler rotation
+    obj_camera.rotation_euler = rot_quat.to_euler()
+
+
+def create_plot_camera(distance=8, xy_rot=-math.pi/4, z_rot=math.pi/6):
+    location = (distance*math.cos(xy_rot), distance*math.sin(xy_rot), distance*math.cos(z_rot))
+    camera_object = create_camera(location)
+    look_at(camera_object, Vector((0, 0, 0)))
+    set_camera_params(camera_object.data, None, lens=50.0)
+    return camera_object
+

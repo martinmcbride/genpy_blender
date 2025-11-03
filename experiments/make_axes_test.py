@@ -1,5 +1,4 @@
 import bpy
-from mathutils import Vector
 import sys
 import math
 import os
@@ -8,116 +7,20 @@ working_dir_path = os.path.abspath("/nas/martin/7-software-projects/genpy_blende
 print("!!!", working_dir_path, "!!!")
 sys.path.append(working_dir_path)
 
+from mathutils import Vector
 import make_image
 import utils
 import camera
 import lighting
-import make_image
-
-def cylinder_between(x1, y1, z1, x2, y2, z2, r=0.01, color=(0, 0, 0, 0)):
-
-  dx = x2 - x1
-  dy = y2 - y1
-  dz = z2 - z1
-  dist = math.sqrt(dx**2 + dy**2 + dz**2)
-
-  bpy.ops.mesh.primitive_cylinder_add(
-      radius = r,
-      depth = dist,
-      location = (dx/2 + x1, dy/2 + y1, dz/2 + z1)
-  )
-
-  phi = math.atan2(dy, dx)
-  theta = math.acos(dz/dist)
-
-  bpy.context.object.rotation_euler[1] = theta
-  bpy.context.object.rotation_euler[2] = phi
-
-  mat = bpy.data.materials.new("col")
-  mat.diffuse_color = color
-  bpy.context.object.active_material = mat
-
-
-def plane(orientation):
-    start = (0, 0, 0)
-    end = (1, 1, 1)
-    step = (5, 4, 6)
-
-    bpy.ops.mesh.primitive_plane_add()
-    plane = bpy.context.active_object
-    if orientation=="x":
-        plane.location = Vector((0, 1, 0))
-        angle = math.radians(90)
-        plane.rotation_euler[0] = angle
-        for i in range(step[0]):
-            cylinder_between(i*0.4 - 1, 1, -1, i*0.4 - 1, 1, 1, 0.01)
-        for i in range(step[2]):
-            cylinder_between(-1, 1, i*0.3333 - 1, 1, 1, i*0.3333 - 1, 0.01)
-
-    if orientation=="y":
-        plane.location = Vector((-1, 0, 0))
-        angle = math.radians(90)
-        plane.rotation_euler[1] = angle
-        for i in range(step[1]):
-            cylinder_between(-1, i * 0.5 - 1, -1, -1, i * 0.5 - 1, 1, 0.01)
-        for i in range(step[2]):
-            cylinder_between(-1, -1, i*0.3333 - 1, -1, 1, i*0.3333 - 1, 0.01)
-
-    if orientation=="z":
-        plane.location = Vector((0, 0, -1))
-        for i in range(step[0]):
-            cylinder_between(i*0.4 - 1, -1, -1, i*0.4 - 1, 1, -1, 0.01)
-        for i in range(step[1]):
-            cylinder_between(-1, i * 0.5 - 1, -1, 1, i * 0.5 - 1, -1, 0.01)
-
-    plane.scale = Vector((1, 1, 1))
-
-    mat = bpy.data.materials.new("col")
-    if orientation=="x":
-        mat.diffuse_color = (0.8, 0.8, 0.8, 1)
-        plane.active_material = mat
-    if orientation=="y":
-        mat.diffuse_color = (0.8, 0.8, 0.8, 1)
-        plane.active_material = mat
-    if orientation=="z":
-        mat.diffuse_color = (0.8, 0.8, 0.8, 1)
-        plane.active_material = mat
-
-def axes():
-    r = 0.02
-    cylinder_between(-1, 1, -1, 1, 1, -1, r, color=(1, 0, 0, 1))
-    cylinder_between(-1, -1, -1, -1, 1, -1, r, color=(0, 1, 0, 1))
-    cylinder_between(-1, 1, -1, -1, 1, 1, r, color=(0, 0, 1, 1))
-
-
-def look_at(obj_camera, point):
-    loc_camera = obj_camera.matrix_world.to_translation()
-
-    direction = point - loc_camera
-    # point the cameras '-Z' and use its 'Y' as up
-    rot_quat = direction.to_track_quat('-Z', 'Y')
-
-    # assume we're using euler rotation
-    obj_camera.rotation_euler = rot_quat.to_euler()
-
-
-def create_plot_camera(distance=8, xy_rot=-math.pi/4, z_rot=math.pi/6):
-    print(distance*math.cos(xy_rot), distance*math.sin(xy_rot), distance*math.cos(z_rot))
-    location = (distance*math.cos(xy_rot), distance*math.sin(xy_rot), distance*math.cos(z_rot))
-    camera_object = camera.create_camera(location)
-    look_at(camera_object, Vector((0, 0, 0)))
-    camera.set_camera_params(camera_object.data, None, lens=50.0)
-    return camera_object
+import graphs
 
 
 def draw(pixel_width, pixel_height, frame_no, frame_count):
 
-    camera_object = create_plot_camera()
+    camera_object = camera.create_plot_camera()
 
-    plane("x")
-    plane("y")
-    plane("z")
-    axes()
+    axes = graphs.Axes()
+    axes.draw()
 
     ## Lights
     lighting.create_sun_light(rotation=(0.0, math.pi * 0.5, -math.pi * 0.1))
