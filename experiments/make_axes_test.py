@@ -4,7 +4,6 @@ import math
 import os
 
 working_dir_path = os.path.abspath("/nas/martin/7-software-projects/genpy_blender/genpy_blender/")
-print("!!!", working_dir_path, "!!!")
 sys.path.append(working_dir_path)
 
 from mathutils import Vector
