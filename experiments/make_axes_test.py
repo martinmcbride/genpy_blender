@@ -12,6 +12,8 @@ import utils
 import camera
 import lighting
 import graphs
+from plots import Plot3dZofXY
+
 
 
 def draw(pixel_width, pixel_height, frame_no, frame_count):
@@ -20,6 +22,8 @@ def draw(pixel_width, pixel_height, frame_no, frame_count):
 
     axes = graphs.Axes()
     axes.draw()
+    plot = Plot3dZofXY(axes, lambda x, y : x + y)
+    plot.plot()
 
     ## Lights
     lighting.create_sun_light(rotation=(0.0, math.pi * 0.5, -math.pi * 0.1))
