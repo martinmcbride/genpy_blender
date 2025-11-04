@@ -19,6 +19,8 @@ class Axes():
         self.plane_color = (0.8, 0.8, 0.8, 1)
         self.div_radius = 0.01
         self.axis_radius = 0.02
+        self.axis_start = (-1, -1, -1)
+        self.axis_end = (1, 1, 1)
         self.start = (0, 0, 0)
         self.end = (1, 1, 1)
         self.step = (0.2, 0.2, 0.2)
@@ -55,25 +57,25 @@ class Axes():
             angle = math.radians(90)
             plane.rotation_euler[0] = angle
             for p in self.steps[0]:
-                self.cylinder_between(p, 1, -1, p, 1, 1, self.div_radius, self.div_color)
+                self.cylinder_between(p, self.axis_end[1], self.axis_start[2], p, self.axis_end[1], self.axis_end[2], self.div_radius, self.div_color)
             for p in self.steps[2]:
-                self.cylinder_between(-1, 1, p, 1, 1, p, self.div_radius, self.div_color)
+                self.cylinder_between(self.axis_start[0], self.axis_end[1], p, self.axis_end[0], self.axis_end[1], p, self.div_radius, self.div_color)
 
         if orientation == "y":
             plane.location = Vector((-1, 0, 0))
             angle = math.radians(90)
             plane.rotation_euler[1] = angle
             for p in self.steps[1]:
-                self.cylinder_between(-1, p, -1, -1, p, 1, self.div_radius, self.div_color)
+                self.cylinder_between(self.axis_start[0], p, self.axis_start[2], self.axis_start[0], p, self.axis_end[2], self.div_radius, self.div_color)
             for p in self.steps[2]:
-                self.cylinder_between(-1, -1, p, -1, 1, p, self.div_radius, self.div_color)
+                self.cylinder_between(self.axis_start[0], self.axis_start[1], p, self.axis_start[0], self.axis_end[1], p, self.div_radius, self.div_color)
 
         if orientation == "z":
             plane.location = Vector((0, 0, -1))
             for p in self.steps[0]:
-                self.cylinder_between(p, -1, -1, p, 1, -1, self.div_radius, self.div_color)
+                self.cylinder_between(p, self.axis_start[1], self.axis_start[2], p, self.axis_end[1], self.axis_start[2], self.div_radius, self.div_color)
             for p in self.steps[1]:
-                self.cylinder_between(-1, p, -1, 1, p, -1, self.div_radius, self.div_color)
+                self.cylinder_between(self.axis_start[0], p, self.axis_start[2], self.axis_end[0], p, self.axis_start[2], self.div_radius, self.div_color)
 
         plane.scale = Vector((1, 1, 1))
 
