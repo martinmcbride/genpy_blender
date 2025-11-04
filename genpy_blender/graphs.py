@@ -19,6 +19,10 @@ class Axes():
         self.plane_color = (0.8, 0.8, 0.8, 1)
         self.div_radius = 0.01
         self.axis_radius = 0.02
+        self.start = (0, 0, 0)
+        self.end = (1, 1, 1)
+        self.step = (0.2, 0.2, 0.2)
+        self.steps = ((-0.8, -0.4, 0, 0.4, 0.8), (-0.8, -0.4, 0, 0.4, 0.8), (-0.8, -0.4, 0, 0.4, 0.8))
 
     def cylinder_between(self, x1, y1, z1, x2, y2, z2, r, color):
 
@@ -44,36 +48,32 @@ class Axes():
         bpy.context.object.active_material = mat
 
     def plane(self, orientation):
-        start = (0, 0, 0)
-        end = (1, 1, 1)
-        step = (5, 4, 6)
-
         bpy.ops.mesh.primitive_plane_add()
         plane = bpy.context.active_object
         if orientation == "x":
             plane.location = Vector((0, 1, 0))
             angle = math.radians(90)
             plane.rotation_euler[0] = angle
-            for i in range(step[0]):
-                self.cylinder_between(i * 0.4 - 1, 1, -1, i * 0.4 - 1, 1, 1, self.div_radius, self.div_color)
-            for i in range(step[2]):
-                self.cylinder_between(-1, 1, i * 0.3333 - 1, 1, 1, i * 0.3333 - 1, self.div_radius, self.div_color)
+            for p in self.steps[0]:
+                self.cylinder_between(p, 1, -1, p, 1, 1, self.div_radius, self.div_color)
+            for p in self.steps[2]:
+                self.cylinder_between(-1, 1, p, 1, 1, p, self.div_radius, self.div_color)
 
         if orientation == "y":
             plane.location = Vector((-1, 0, 0))
             angle = math.radians(90)
             plane.rotation_euler[1] = angle
-            for i in range(step[1]):
-                self.cylinder_between(-1, i * 0.5 - 1, -1, -1, i * 0.5 - 1, 1, self.div_radius, self.div_color)
-            for i in range(step[2]):
-                self.cylinder_between(-1, -1, i * 0.3333 - 1, -1, 1, i * 0.3333 - 1, self.div_radius, self.div_color)
+            for p in self.steps[1]:
+                self.cylinder_between(-1, p, -1, -1, p, 1, self.div_radius, self.div_color)
+            for p in self.steps[2]:
+                self.cylinder_between(-1, -1, p, -1, 1, p, self.div_radius, self.div_color)
 
         if orientation == "z":
             plane.location = Vector((0, 0, -1))
-            for i in range(step[0]):
-                self.cylinder_between(i * 0.4 - 1, -1, -1, i * 0.4 - 1, 1, -1, self.div_radius, self.div_color)
-            for i in range(step[1]):
-                self.cylinder_between(-1, i * 0.5 - 1, -1, 1, i * 0.5 - 1, -1, self.div_radius, self.div_color)
+            for p in self.steps[0]:
+                self.cylinder_between(p, -1, -1, p, 1, -1, self.div_radius, self.div_color)
+            for p in self.steps[1]:
+                self.cylinder_between(-1, p, -1, 1, p, -1, self.div_radius, self.div_color)
 
         plane.scale = Vector((1, 1, 1))
 
