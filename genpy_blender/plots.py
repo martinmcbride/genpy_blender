@@ -12,6 +12,7 @@ class Plot3dZofXY:
         self.axes = axes
         self.function = function
         self.samples = 100
+        self.color = (0, 0, 1, 1)
 
     def convert_points(self, x, y, z):
 #        self.axes.end = [ex + s for ex, s in zip(self.axes.extent, self.axes.start)]
@@ -54,6 +55,9 @@ class Plot3dZofXY:
         # Create Mesh Datablock
         mesh = bpy.data.meshes.new("graph")
         mesh.from_pydata(verts, [], faces)
+        mat = bpy.data.materials.new("graph")
+        mat.diffuse_color = self.color
+        mesh.materials.append(mat)
 
         # Create Object and link to scene
         obj = bpy.data.objects.new("graph", mesh)
