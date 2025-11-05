@@ -61,4 +61,5 @@ class Plot3dZofXY:
 
         # Create Object and link to scene
         obj = bpy.data.objects.new("graph", mesh)
+        obj.visible_shadow = False
         bpy.context.scene.collection.objects.link(obj)

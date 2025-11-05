@@ -46,7 +46,7 @@ def look_at(obj_camera, point):
     obj_camera.rotation_euler = rot_quat.to_euler()
 
 
-def create_plot_camera(distance=8, xy_rot=-math.pi/4, z_rot=math.pi/6):
+def create_plot_camera(distance=4, xy_rot=-math.pi/4, z_rot=math.pi/6):
     location = (distance*math.cos(xy_rot), distance*math.sin(xy_rot), distance*math.cos(z_rot))
     camera_object = create_camera(location)
     look_at(camera_object, Vector((0, 0, 0)))

@@ -30,4 +30,4 @@ def draw(pixel_width, pixel_height, frame_no, frame_count):
 
     return camera_object
 
-make_image.make_blender_image("make_axes_test", draw, 100, 100)
+make_image.make_blender_image("make_axes_test", draw, 500, 500)
