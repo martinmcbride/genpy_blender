@@ -104,24 +104,26 @@ class Axes():
             for p, pa in zip(self.steps[0], self.axis_steps[0]):
                 self.cylinder_between(pa, self.axis_end[1], self.axis_start[2], pa, self.axis_end[1], self.axis_end[2], self.div_radius, self.div_color)
                 self.add_axis_text(str(p), (p, 0, 0))
-            for pa in self.axis_steps[2]:
+            for p, pa in zip(self.steps[2], self.axis_steps[2]):
                 self.cylinder_between(self.axis_start[0], self.axis_end[1], pa, self.axis_end[0], self.axis_end[1], pa, self.div_radius, self.div_color)
 
         if orientation == "y":
             plane.location = Vector((-1, 0, 0))
             angle = math.radians(90)
             plane.rotation_euler[1] = angle
-            for p in self.steps[1]:
-                self.cylinder_between(self.axis_start[0], p, self.axis_start[2], self.axis_start[0], p, self.axis_end[2], self.div_radius, self.div_color)
-            for p in self.steps[2]:
-                self.cylinder_between(self.axis_start[0], self.axis_start[1], p, self.axis_start[0], self.axis_end[1], p, self.div_radius, self.div_color)
+            for p, pa in zip(self.steps[1], self.axis_steps[1]):
+                self.cylinder_between(self.axis_start[0], pa, self.axis_start[2], self.axis_start[0], pa, self.axis_end[2], self.div_radius, self.div_color)
+                self.add_axis_text(str(p), (1, p, 0))
+            for p, pa in zip(self.steps[2], self.axis_steps[2]):
+                self.cylinder_between(self.axis_start[0], self.axis_start[1], pa, self.axis_start[0], self.axis_end[1], pa, self.div_radius, self.div_color)
 
         if orientation == "z":
             plane.location = Vector((0, 0, -1))
-            for p in self.steps[0]:
-                self.cylinder_between(p, self.axis_start[1], self.axis_start[2], p, self.axis_end[1], self.axis_start[2], self.div_radius, self.div_color)
-            for p in self.steps[1]:
-                self.cylinder_between(self.axis_start[0], p, self.axis_start[2], self.axis_end[0], p, self.axis_start[2], self.div_radius, self.div_color)
+            for p, pa in zip(self.steps[0], self.axis_steps[0]):
+                self.cylinder_between(pa, self.axis_start[1], self.axis_start[2], pa, self.axis_end[1], self.axis_start[2], self.div_radius, self.div_color)
+            for p, pa in zip(self.steps[1], self.axis_steps[1]):
+                self.add_axis_text(str(p), (1, 1, p))
+                self.cylinder_between(self.axis_start[0], pa, self.axis_start[2], self.axis_end[0], pa, self.axis_start[2], self.div_radius, self.div_color)
 
         plane.scale = Vector((1, 1, 1))
 
