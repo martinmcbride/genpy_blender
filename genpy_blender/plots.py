@@ -14,14 +14,6 @@ class Plot3dZofXY:
         self.samples = 100
         self.color = (0, 0, 1, 1)
 
-    def convert_points(self, x, y, z):
-#        self.axes.end = [ex + s for ex, s in zip(self.axes.extent, self.axes.start)]
-        xo = ((x - self.axes.start[0]) * (self.axes.axis_end[0] - self.axes.axis_start[0]) / (self.axes.end[0] - self.axes.start[0])) + self.axes.axis_start[0]
-        yo = ((y - self.axes.start[1]) * (self.axes.axis_end[1] - self.axes.axis_start[1]) / (self.axes.end[1] - self.axes.start[1])) + self.axes.axis_start[1]
-        zo = ((z - self.axes.start[2]) * (self.axes.axis_end[2] - self.axes.axis_start[2]) / (self.axes.end[2] - self.axes.start[2])) + self.axes.axis_start[2]
-#        print("STEPS", zo, z, self.axes.start[1], self.axes.end[1], self.axes.axis_end[1], self.axes.axis_start[1])
-        return xo, yo, zo
-
     def vert(self, i, j, x, y, z):
         """ Create a single vert """
         return (x[i, j], y[i, j], z[i, j])
@@ -44,7 +36,7 @@ class Plot3dZofXY:
         # print(xx, yy, ff)
         # print(">>>>>>")
 
-        vf = np.vectorize(self.convert_points)
+        vf = np.vectorize(self.axes.convert_points_graph_to_blender)
         xx, yy, ff = vf(xx, yy, ff)
         # print("[[[[[[")
         # print(xx, yy, ff)
@@ -62,4 +54,5 @@ class Plot3dZofXY:
         # Create Object and link to scene
         obj = bpy.data.objects.new("graph", mesh)
         obj.visible_shadow = False
+        #bpy.ops.object.shade_smooth = True
         bpy.context.scene.collection.objects.link(obj)

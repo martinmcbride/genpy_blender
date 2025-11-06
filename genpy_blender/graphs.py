@@ -34,6 +34,10 @@ class Axes():
         self.start = (0, 0, 0)
         self.end = (1, 1, 1)
         self.step = (0.2, 0.2, 0.2)
+        self.font_size = 0.15
+        self.text_offset_x = (0, -0.1, -0.05)
+        self.text_offset_y = (0.05, 0, -0.05)
+        self.text_offset_z = (0.05, 0, 0.)
         self.steps = ((0, 0.2, 0.4, 0.6, 0.8, 1.0), (0, 0.2, 0.4, 0.6, 0.8, 1.0), (0, 0.2, 0.4, 0.6, 0.8, 1.0))
         self.axis_steps = ((0, 0.2, 0.4, 0.6, 0.8, 1.0), (0, 0.2, 0.4, 0.6, 0.8, 1.0), (0, 0.2, 0.4, 0.6, 0.8, 1.0))
 
@@ -66,7 +70,7 @@ class Axes():
         print("**", value, location, obj.location)
         text_data = obj.data
         text_data.body = value
-        text_data.size = 0.12
+        text_data.size = self.font_size
         text = bpy.context.active_object
         align_perpendicular_to_camera(text, bpy.data.objects.get("Camera"))
         create_diffuse_material(text, (0, 0, 0, 1), "text_material")
@@ -103,7 +107,7 @@ class Axes():
             plane.rotation_euler[0] = angle
             for p, pa in zip(self.steps[0], self.axis_steps[0]):
                 self.cylinder_between(pa, self.axis_end[1], self.axis_start[2], pa, self.axis_end[1], self.axis_end[2], self.div_radius, self.div_color)
-                self.add_axis_text(str(p), (p, 0, 0))
+                self.add_axis_text(str(p), (p + self.text_offset_x[0], self.text_offset_x[1], self.text_offset_x[2]))
             for p, pa in zip(self.steps[2], self.axis_steps[2]):
                 self.cylinder_between(self.axis_start[0], self.axis_end[1], pa, self.axis_end[0], self.axis_end[1], pa, self.div_radius, self.div_color)
 
@@ -113,7 +117,7 @@ class Axes():
             plane.rotation_euler[1] = angle
             for p, pa in zip(self.steps[1], self.axis_steps[1]):
                 self.cylinder_between(self.axis_start[0], pa, self.axis_start[2], self.axis_start[0], pa, self.axis_end[2], self.div_radius, self.div_color)
-                self.add_axis_text(str(p), (1, p, 0))
+                self.add_axis_text(str(p), (1 + self.text_offset_y[0], p + self.text_offset_y[1], self.text_offset_y[2]))
             for p, pa in zip(self.steps[2], self.axis_steps[2]):
                 self.cylinder_between(self.axis_start[0], self.axis_start[1], pa, self.axis_start[0], self.axis_end[1], pa, self.div_radius, self.div_color)
 
@@ -122,7 +126,7 @@ class Axes():
             for p, pa in zip(self.steps[0], self.axis_steps[0]):
                 self.cylinder_between(pa, self.axis_start[1], self.axis_start[2], pa, self.axis_end[1], self.axis_start[2], self.div_radius, self.div_color)
             for p, pa in zip(self.steps[1], self.axis_steps[1]):
-                self.add_axis_text(str(p), (1, 1, p))
+                self.add_axis_text(str(p), (1 + self.text_offset_z[0], 1+ self.text_offset_z[1], p+ self.text_offset_z[2]))
                 self.cylinder_between(self.axis_start[0], pa, self.axis_start[2], self.axis_end[0], pa, self.axis_start[2], self.div_radius, self.div_color)
 
         plane.scale = Vector((1, 1, 1))
