@@ -2,6 +2,7 @@
 # Created: 2025-11-03
 # Copyright (c) 2025, Martin McBride
 # License: GNU GPL V 3
+import random
 
 import numpy as np
 import bpy
@@ -21,6 +22,10 @@ class Plot3dZofXY:
     def face(self, column, row):
         """ Create a single face """
         return (column * self.samples + row, (column + 1) * self.samples + row, (column + 1) * self.samples + 1 + row, column * self.samples + 1 + row)
+
+    def set_vertex_colors(self, mesh):
+        for i, v in enumerate(mesh.vertex_colors[0].data):
+            mesh.vertex_colors[0].data[i] = (1, 0, 1, 1)
 
     def plot(self):
         # print("*****************", self.axes.start[0], self.axes.end[0], self.axes.steps[0])
@@ -51,8 +56,21 @@ class Plot3dZofXY:
         mat.diffuse_color = self.color
         mesh.materials.append(mat)
 
-        # Create Object and link to scene
-        obj = bpy.data.objects.new("graph", mesh)
-        obj.visible_shadow = False
-        #bpy.ops.object.shade_smooth = True
-        bpy.context.scene.collection.objects.link(obj)
+        color_layer = mesh.vertex_colors.new(name="graph_colors")
+
+        for poly in mesh.polygons:
+            for i in range(len(poly.vertices)):
+                color_layer.data[poly.loop_indices[i]].color = [1, 1, 0, 1]
+                #print(poly.vertices[i])
+
+        # mesh.vertex_colors.new()
+        # self.set_vertex_colors(mesh)
+
+        # bpy.ops.object.mode_set(mode='VERTEX_PAINT')
+        #
+        # # Create Object and link to scene
+        # obj = bpy.data.objects.new("graph", mesh)
+        # obj.visible_shadow = False
+        # #bpy.ops.object.shade_smooth = True
+        # bpy.context.scene.collection.objects.link(obj)
+        # bpy.ops.object.mode_set(mode='OBJECT')
