@@ -18,15 +18,6 @@ class Plot3dZofXY:
         self.color = (0, 0, 1, 1)
 
     def plot(self):
-        x = np.linspace(self.axes.start[0], self.axes.end[0], self.samples)
-        y = np.linspace(self.axes.start[1], self.axes.end[1], self.samples)
-        xx, yy = np.meshgrid(x, y)
-        vf = np.vectorize(self.function)
-        ff = vf(xx, yy)
-
-        vf = np.vectorize(self.axes.convert_points_graph_to_blender)
-        xx, yy, ff = vf(xx, yy, ff)
-
         bpy.ops.mesh.primitive_grid_add(x_subdivisions=120, y_subdivisions=120, location=self.axes.start)
         bpy.ops.transform.resize(value=self.axes.end)
 
@@ -47,47 +38,22 @@ class Plot3dZofXY:
         bpy.ops.object.mode_set(mode='OBJECT')
 
         # Get the active object (which is the cube)
-        cube = bpy.context.active_object
+        graph_object = bpy.context.active_object
         # Get the mesh data
-        mesh = cube.data
-
-        # Find min and max coord of active object:
-        # Get the object's world matrix
-        world_matrix = cube.matrix_world
-
-        # Initialize min and max coordinates
-        min_coords = [float('inf'), float('inf'), float('inf')]
-        max_coords = [float('-inf'), float('-inf'), float('-inf')]
-
-        # Iterate through the vertices
-        for vertex in cube.data.vertices:
-            vertex_world = world_matrix @ vertex.co
-
-            # Update min and max coordinates
-            for i in range(3):
-                min_coords[i] = min(min_coords[i], vertex_world[i])
-                max_coords[i] = max(max_coords[i], vertex_world[i])
-
-        # Calculate mins and maxes:
-        max_x = max_coords[0]
-        max_y = max_coords[1]
-        max_z = max_coords[2]
-        min_x = min_coords[0]
-        min_y = min_coords[1]
-        min_z = min_coords[2]
+        mesh = graph_object.data
 
         # Switch to Vertex Paint mode
         bpy.ops.object.mode_set(mode='VERTEX_PAINT')
 
         # Set the active vertex color layer
-        active_vc_layer = cube.data.vertex_colors.active
+        active_vc_layer = graph_object.data.vertex_colors.active
         if active_vc_layer is None:
-            active_vc_layer = cube.data.vertex_colors.new()
+            active_vc_layer = graph_object.data.vertex_colors.new()
 
         # Loop through the vertices and set them to red
-        for poly in cube.data.polygons:
+        for poly in graph_object.data.polygons:
             for loop_index in poly.loop_indices:
-                loop = cube.data.loops[loop_index]
+                loop = graph_object.data.loops[loop_index]
                 vertex_index = loop.vertex_index
                 vert = mesh.vertices[vertex_index]
                 # color = color_map(vert.co.z, colormap, display_levels)
@@ -96,10 +62,10 @@ class Plot3dZofXY:
 
         # Create a new material
         mat = bpy.data.materials.new(name="Vertex Color Material")
-        cube.data.materials.append(mat)
+        graph_object.data.materials.append(mat)
 
         # Get a reference to the material
-        mat = cube.data.materials[0]
+        mat = graph_object.data.materials[0]
 
         # Create a new node tree for the material
         mat.use_nodes = True
