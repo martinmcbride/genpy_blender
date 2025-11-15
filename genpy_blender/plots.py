@@ -17,18 +17,6 @@ class Plot3dZofXY:
         self.samples = 100
         self.color = (0, 0, 1, 1)
 
-    def vert(self, i, j, x, y, z):
-        """ Create a single vert """
-        return (x[i, j], y[i, j], z[i, j])
-
-    def face(self, column, row):
-        """ Create a single face """
-        return (column * self.samples + row, (column + 1) * self.samples + row, (column + 1) * self.samples + 1 + row, column * self.samples + 1 + row)
-
-    def set_vertex_colors(self, mesh):
-        for i, v in enumerate(mesh.vertex_colors[0].data):
-            mesh.vertex_colors[0].data[i] = (1, 0, 1, 1)
-
     def plot(self):
         x = np.linspace(self.axes.start[0], self.axes.end[0], self.samples)
         y = np.linspace(self.axes.start[1], self.axes.end[1], self.samples)
@@ -38,11 +26,9 @@ class Plot3dZofXY:
 
         vf = np.vectorize(self.axes.convert_points_graph_to_blender)
         xx, yy, ff = vf(xx, yy, ff)
-        verts = [self.vert(x, y, xx, yy, ff) for x in range(self.samples) for y in range(self.samples)]
-        faces = [self.face(x, y) for x in range(self.samples - 1) for y in range(self.samples - 1)]
 
-        bpy.ops.mesh.primitive_grid_add(x_subdivisions=120, y_subdivisions=120, location=(1, 1, 0))
-        bpy.ops.transform.resize(value=(1, 1, 1))
+        bpy.ops.mesh.primitive_grid_add(x_subdivisions=120, y_subdivisions=120, location=self.axes.start)
+        bpy.ops.transform.resize(value=self.axes.end)
 
         bpy.ops.object.mode_set(mode='EDIT')
 
@@ -52,11 +38,9 @@ class Plot3dZofXY:
         bm = bmesh.from_edit_mesh(mesh)
 
         for v in bm.verts:
-            x = v.co.x
-            y = v.co.y
-            #z = exp(-(x ** 2 + y ** 2) / 0.21) / (0.21 * pi) + 1
-            z = math.sin(5 * x)
-            v.co.z += z
+            x, y, _ = self.axes.convert_points_blender_to_graph(v.co.x, v.co.y, 0)
+            z = self.function(x, y)
+            v.co.z += self.axes.convert_points_graph_to_blender(x, y, z)[2]
 
         bmesh.update_edit_mesh(mesh)
 
