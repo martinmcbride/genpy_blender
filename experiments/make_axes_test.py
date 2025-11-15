@@ -22,7 +22,7 @@ def draw(pixel_width, pixel_height, frame_no, frame_count):
 
     axes = graphs.Axes()
     axes.draw()
-    plot = Plot3dZofXY(axes, lambda x, y : 0.5*(math.sin(6*x)*math.cos(6*y) + 1))
+    plot = Plot3dZofXY(axes, lambda x, y : 0.3*(math.sin(6*x)*math.cos(6*y) + 1))
     plot.plot()
 
     ## Lights
